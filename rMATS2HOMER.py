@@ -10,9 +10,9 @@ use_count_cutoff = True  # Boolean indicating whether or not you want to exclude
 count_cutoff = 5  # If use_count_cutoff is True, this is the cutoff for the fewest counts allowed.
 SJ_flank = 100  # How many intronic bases flanking each splice junction you want the output to include.
 use_JCEC = True  # Whether the program should use JCEC or JC rMATS input. JC = junction counts only, JCEC = junction counts and exon counts.
-output_folder = "/orange/swanson/carter.h/ChP_Splicing_Project/Swanson_Lab_Human_ChP/seq_data/STAR_aligned_150_sjdb_multimapNmax_1/rMATS_CTL_vs_DM1_6_and_11_non_SS/HOMER_input_testing"  # Where you want the results to go. Directory does not have to exist.
-rMATS_folder = "/orange/swanson/carter.h/ChP_Splicing_Project/Swanson_Lab_Human_ChP/seq_data/STAR_aligned_150_sjdb_multimapNmax_1/rMATS_CTL_vs_DM1_6_and_11_non_SS"  # Path to rMATS output to be processed.
-path_to_fasta = "/orange/swanson/carter.h/genomes/human/ensembl/Homo_sapiens.GRCh38.dna.primary_assembly.fa"  # Path to appropriate primary assembly fasta for organism of interest. Must be indexed to allow fast, random access.
+output_folder = "/path/to/your/desired/output"  # Where you want the results to go. Directory does not have to exist.
+rMATS_folder = "/path/to/your/rMATS/results"  # Path to rMATS output to be processed.
+path_to_fasta = "/path/to/appropriate/fasta/Homo_sapiens.GRCh38.dna.primary_assembly.fa"  # Path to appropriate primary assembly fasta for organism of interest. Must be indexed to allow fast, random access.
 
 
 
