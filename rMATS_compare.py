@@ -5,30 +5,30 @@ from Bio import pairwise2
 from pyfaidx import Fasta
 
 #settings
-testing = False
-verbose = False
-mean_counts = True
-FDR_cutoff = 0.05
-use_FDR_cutoff = True
-count_cutoff=5
-use_count_cutoff = True
-absdPSI_cutoff = 0.10
-use_absdPSI_cutoff = True
+testing = False  # For debugging purposes only.
+verbose = False  # Include extra information, like every column in the input rMATS files.
+FDR_cutoff = 0.05  # What rMATS FDR value you want to use as a signifigance cutoff. No splicing events with values above this will be included in output.
+use_FDR_cutoff = True  # Boolean indicating whether or not you want to exclude splicing events with greater than a given FDR, as calculated by rMATS.
+count_cutoff = 5  # If use_count_cutoff is True, this is the cutoff for the fewest counts allowed.
+use_count_cutoff = True  # Boolean indicating whether or not you want to exclude splicing events with less than a given number of counts.
+absdPSI_cutoff = 0.10  # If use_absdPSI_cutoff is True, this is the cutoff for the lowest absolute delta PSI value allowed.
+use_absdPSI_cutoff = True  # Boolean indicating whether or not you want to exclude splicing events with less than a given absolute delta PSI value, as calculated by rMATS.
+use_JCEC = True  # Whether the program should use JCEC or JC rMATS input. JC = junction counts only, JCEC = junction counts and exon counts.
 event_list = ["SE","MXE","A5SS","A3SS","RI"]  # List of which alternative splicing events you want to compare
-intron_distances = [25]  # List of what intron distances you want to be considered for pairwise alignment
-print_two = True
+intron_distances = [25]  # List of how many intronic bases flanking splice junctions you want to be considered for pairwise alignment.
+print_two = True  # If true, the output files will the include the best alternative splicing match according to exon pairwise alignment AND the best alternative splicing match according to exon and flanking intronic region pairwise alignment.
+rMATS_folder_1 = "/orange/swanson/carter.h/ChP_Splicing_Project/Swanson_Lab_Human_ChP/seq_data/STAR_aligned_150_sjdb_multimapNmax_1/rMATS_DM1_5_12_vs_DM1_6_11_non_SS"  # Path to rMATS output for organism 1.
+rMATS_folder_2 = "/orange/swanson/carter.h/ChP_Splicing_Project/Mbnl_12KO_ChP/rMATS_output_2KO_ChP_Triplicate"  # Path to rMATS output for organism 1.
+path_to_fasta1 = "/orange/swanson/carter.h/genomes/human/ensembl/Homo_sapiens.GRCh38.dna.primary_assembly.fa"  # Path to appropriate primary assembly fasta for organism 1. Must be indexed to allow fast, random access.
+path_to_fasta2 = "/orange/swanson/carter.h/genomes/mouse/ensembl/Mus_musculus.GRCm38.dna.primary_assembly.fa"  # Path to appropriate primary assembly fasta for organism 2. Must be indexed to allow fast, random access.
+orthology_file = "/orange/swanson/carter.h/genomes/human/ensembl/human_mouse_homology_ensembl_IDs.csv"  # Path to a csv where one column is ensembl gene IDs for organism 1 and the other column is ensembl gene IDs for organism 2.
+output_prefix = "DM1_human_ChP_outlier_contrast_vs_2KO_ChP"  # String used to name the output files.
 
 
-rMATS_folder_1 = "/orange/swanson/carter.h/ChP_Splicing_Project/Swanson_Lab_Human_ChP/seq_data/STAR_aligned_150_sjdb_multimapNmax_1/rMATS_DM1_5_12_vs_DM1_6_11_non_SS"
-rMATS_folder_2 = "/orange/swanson/carter.h/ChP_Splicing_Project/Mbnl_12KO_ChP/rMATS_output_2KO_ChP_Triplicate"
-path_to_fasta1 = "/orange/swanson/carter.h/genomes/human/ensembl/Homo_sapiens.GRCh38.dna.primary_assembly.fa"
-path_to_fasta2 = "/orange/swanson/carter.h/genomes/mouse/ensembl/Mus_musculus.GRCm38.dna.primary_assembly.fa"
-orthology_file = "/orange/swanson/carter.h/genomes/human/ensembl/human_mouse_homology_ensembl_IDs.csv"
 
 
 
-
-if not verbose:
+if not verbose:  # Dictates what information should be discarded from the output if verbose == False.
 	omit_list = ["chr","strand","IncFormLen","SkipFormLen","alt_exon","DS_intron_5P","DS_intron_3P","US_intron_5P","US_intron_3P","MXE_1","MXE_2","inter_MXE_5P",
 	"inter_MXE_3P","RI","short_exon","long_exon","US_exon_5P","US_exon_3P","DS_exon_5P","DS_exon_3P"]
 	species2_omit_list = omit_list + ["IJC_SAMPLE_1","IJC_SAMPLE_2","SJC_SAMPLE_1","SJC_SAMPLE_2","PValue","FDR","IncLevel1","IncLevel2",
@@ -37,14 +37,15 @@ else:
 	omit_list = []
 	species2_omit_list = []
 
-print_two_dict = {"SE":"alt_exon",
+print_two_dict =  {  # Dictates which region should be considered for pairwise alignment in addition to intronic regions + alternative regions if print_two == True.
+"SE":"alt_exon",
 "A5SS":"long_exon",
 "A3SS":"long_exon",
 "MXE":"MXE",
 "RI":"RI"}
 
 
-splicing_dict = {
+splicing_dict = {  # Dictates which named regions in the rMATS output correspond to regions of interest relative to alternative splicing regions for different types of events.
 				"SE":{
 						"alt_exon":{"5P":"exonStart_0base","3P":"exonEnd","exon":True},
 						"US_intron_5P":{"5P":"upstreamEE","3P":"exonStart_0base"},
@@ -78,7 +79,7 @@ splicing_dict = {
 						"DS_exon_3P":{"5P":"downstreamES","3P":"downstreamEE"}}
 }
 
-#turns rMATS file into a dictionary
+# Turns rMATS file into a dictionary.
 def parse_rMATS(rMATS_path, genome_dict):
 	AS_event_type = rMATS_path.split("/")[-1].split(".")[0]
 	with open(rMATS_path, "r") as f:
@@ -155,7 +156,7 @@ def parse_rMATS(rMATS_path, genome_dict):
 	print(str(len(rMATS_dict)) + " " + AS_event_type + " events passing cutoffs for " + species)
 	return rMATS_dict, species
 
-#turns an ensembl biomart file with gene orthology into a dictionary
+# Turns an ensembl biomart file with gene orthology into a dictionary.
 def orthology_parse(orthology_file, species1, species2):
 	orthology_dict = {}
 	ensembl_species_dict = {"human":"ENSG",
@@ -186,7 +187,7 @@ def orthology_parse(orthology_file, species1, species2):
 
 		return orthology_dict
 
-#takes an ENSEMBL id and returns the organism
+# Takes an ENSEMBL id and returns the organism.
 def identify_organism(gene_id):
 	if gene_id[:4] == "ENSG":
 		return "human"
@@ -195,7 +196,7 @@ def identify_organism(gene_id):
 	elif gene_id[:7] == "ENSMUSG":
 		return "mouse"
 
-#returns the length of whichever string is longer
+# Returns the length of whichever string is longer.
 def longest_of_two(string1,string2):
 	if len(string1) >= len(string2):
 		return len(string1)
@@ -203,6 +204,11 @@ def longest_of_two(string1,string2):
 		return len(string2)
 
 if __name__ == "__main__":
+	if use_JCEC == True:  # Decides whether to open the JCEC or JC file based on what the user supplied in #settings.
+		JCEC_or_JC = "JCEC"
+	else:
+		JCEC_or_JC = "JC"
+
 	orthology_dict = None
 	print("reading chromosomes")
 	genome_dict1 = Fasta(path_to_fasta1)
@@ -210,25 +216,27 @@ if __name__ == "__main__":
 	print("done reading chromosomes")
 
 	for intron_distance in intron_distances:
-		filename_ending = f".DM1_human_ChP_outlier_contrast_vs_2KO_ChP.{intron_distance}intron.{count_cutoff}count_and_FDR_cutoff.tsv"
+		filename_ending = f".{output_prefix}.{intron_distance}intron.tsv"
+
 		for event in event_list:
 			out_list = []
-			rMATS_path1 = f"{rMATS_folder_1}/{event}.MATS.JCEC.txt"
-			rMATS_path2 = f"{rMATS_folder_2}/{event}.MATS.JCEC.txt"
+			rMATS_path1 = f"{rMATS_folder_1}/{event}.MATS.{JCEC_or_JC}.txt"
+			rMATS_path2 = f"{rMATS_folder_2}/{event}.MATS.{JCEC_or_JC}.txt"
 			filename = rMATS_path1 + filename_ending
 			AS_event_type = rMATS_path1.split("/")[-1].split(".")[0]
 
 			print("reading rMATS files")
 			rMATS_dict1, species1 = parse_rMATS(rMATS_path1, genome_dict1)
 			rMATS_dict2, species2 = parse_rMATS(rMATS_path2, genome_dict2)
-			if orthology_dict == None:
+
+			if orthology_dict == None:  # If the orthology dictionary hasn't already been created, create it now.
 				print("reading orthology file")
 				orthology_dict = orthology_parse(orthology_file, species1, species2)
 
 			print("calculating scores and writing to " + filename)
 
-			#figure out the gene with the most splicing event in rMATS_dict2
-			if verbose:
+
+			if verbose:  # Determine the gene with the most splicing event in rMATS_dict2
 				longest_dict2_entry = 0
 				for gene in rMATS_dict2:
 					if len(rMATS_dict2[gene]) > longest_dict2_entry:
@@ -241,6 +249,7 @@ if __name__ == "__main__":
 			header_written3 = False
 			out = open(filename, "w+")
 			out.close()
+
 			for gene1 in list(rMATS_dict1):
 				for event1 in rMATS_dict1[gene1]:
 					out = open(filename, "a+")
@@ -305,22 +314,22 @@ if __name__ == "__main__":
 									out.write("\t".join(header_list) + "\n")
 								header_written2 = True
 
-
+						# Sort pairwise aligned splicing events by alignment score so we can either print only the highest one or print them all in order of descending score.
 						for event2 in sorted(rMATS_dict2[gene2].items(), key = lambda k_v: k_v[1]['total_score'], reverse = True):
 							for key in [key for key in rMATS_dict2[gene2][event2[0]] if key not in species2_omit_list]:
 								out_list.append(str(rMATS_dict2[gene2][event2[0]][key]))
 							if not verbose:
 								break
-						if print_two:
-							sortby = print_two_dict[AS_event_type] + "_score"
 
+						if print_two:  # As above, but for the appropriate region of interest for print_two.
+							sortby = print_two_dict[AS_event_type] + "_score"
 							for event2 in sorted(rMATS_dict2[gene2].items(), key = lambda k_v: k_v[1][sortby], reverse = True):
 								for key in [key for key in rMATS_dict2[gene2][event2[0]] if key not in species2_omit_list]:
 									out_list.append(str(rMATS_dict2[gene2][event2[0]][key]))
 								if not verbose:
 									break
-					if header_written3:
-						#have to do this a funky way otherwise the first couple lines will be indented a tab when they shouldn't be
+
+					if header_written3:  # Have to do this a funky way otherwise the first couple lines will be indented a tab when they shouldn't be.
 						out_buffer = "\t".join(out_list)
 						out_buffer = out_buffer.split("\n")
 						for line in out_buffer:
