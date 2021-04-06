@@ -10,3 +10,10 @@ Purpose: Accepts [rMATS](https://github.com/Xinglab/rmats-turbo) output and conv
 Dependencies:
 - [pyfaidx](https://pypi.org/project/pyfaidx/) `pip install pyfaidx`
 - [Biopython](https://biopython.org/) `pip install biopython`
+
+## rMATS_compare.py
+Purpose: Accepts [rMATS](https://github.com/Xinglab/rmats-turbo) output for two different species and compares alternative splicing events between the two species to predict which events are orthologous.
+
+Dependencies:
+- [pyfaidx](https://pypi.org/project/pyfaidx/) `pip install pyfaidx`
+- [Biopython](https://biopython.org/) `pip install biopython`
