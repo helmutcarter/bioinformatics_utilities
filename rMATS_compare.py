@@ -17,12 +17,12 @@ use_JCEC = True  # Whether the program should use JCEC or JC rMATS input. JC = j
 event_list = ["SE","MXE","A5SS","A3SS","RI"]  # List of which alternative splicing events you want to compare
 intron_distances = [25]  # List of how many intronic bases flanking splice junctions you want to be considered for pairwise alignment.
 print_two = True  # If true, the output files will the include the best alternative splicing match according to exon pairwise alignment AND the best alternative splicing match according to exon and flanking intronic region pairwise alignment.
-rMATS_folder_1 = "/orange/swanson/carter.h/ChP_Splicing_Project/Swanson_Lab_Human_ChP/seq_data/STAR_aligned_150_sjdb_multimapNmax_1/rMATS_DM1_5_12_vs_DM1_6_11_non_SS"  # Path to rMATS output for organism 1.
-rMATS_folder_2 = "/orange/swanson/carter.h/ChP_Splicing_Project/Mbnl_12KO_ChP/rMATS_output_2KO_ChP_Triplicate"  # Path to rMATS output for organism 1.
-path_to_fasta1 = "/orange/swanson/carter.h/genomes/human/ensembl/Homo_sapiens.GRCh38.dna.primary_assembly.fa"  # Path to appropriate primary assembly fasta for organism 1. Must be indexed to allow fast, random access.
-path_to_fasta2 = "/orange/swanson/carter.h/genomes/mouse/ensembl/Mus_musculus.GRCm38.dna.primary_assembly.fa"  # Path to appropriate primary assembly fasta for organism 2. Must be indexed to allow fast, random access.
-orthology_file = "/orange/swanson/carter.h/genomes/human/ensembl/human_mouse_homology_ensembl_IDs.csv"  # Path to a csv where one column is ensembl gene IDs for organism 1 and the other column is ensembl gene IDs for organism 2.
-output_prefix = "DM1_human_ChP_outlier_contrast_vs_2KO_ChP"  # String used to name the output files.
+rMATS_folder_1 = "/path/to/rMATS/output/for/organism1"  # Path to rMATS output for organism 1.
+rMATS_folder_2 = "/path/to/rMATS/output/for/organism2"  # Path to rMATS output for organism 1.
+path_to_fasta1 = "/path/to/fasta/output/for/organism1"  # Path to appropriate primary assembly fasta for organism 1. Must be indexed to allow fast, random access.
+path_to_fasta2 = "/path/to/fasta/output/for/organism2"  # Path to appropriate primary assembly fasta for organism 2. Must be indexed to allow fast, random access.
+orthology_file = "/path/to/biomart/orthology/file"  # Path to a csv where one column is ensembl gene IDs for organism 1 and the other column is ensembl gene IDs for organism 2.
+output_prefix = "your_output_prefix"  # String used to name the output files.
 
 
 
