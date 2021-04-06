@@ -2,3 +2,6 @@
 
 ## motif_counter.py
 To use: edit the variables at the top with your motif of interest and query sequence. Requires no packages.
+\n
+\n
+## test
