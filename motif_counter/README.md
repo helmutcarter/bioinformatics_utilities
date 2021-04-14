@@ -2,7 +2,7 @@
 
 
 ## To Use
-Edit the variables at the top with your motif of interest and query sequence. No dependencies.
+Edit the variables at the top with your motif of interest and query sequence.
 
-## Dependencies:
-- none
+## Dependencies
+None
