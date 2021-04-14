@@ -7,7 +7,8 @@ Dependencies:
 - None.
 
 ## rMATS2HOMER.py
-Purpose: Accepts [rMATS](https://github.com/Xinglab/rmats-turbo) output and converts into sequence files that can be used by [HOMER](http://homer.ucsd.edu/homer/motif/), a motif enrichment discovery program.
+### Purpose:
+Accepts [rMATS](https://github.com/Xinglab/rmats-turbo) output and converts into sequence files that can be used by [HOMER](http://homer.ucsd.edu/homer/motif/), a motif enrichment discovery program.
 
 Dependencies:
 - [pyfaidx](https://pypi.org/project/pyfaidx/) `pip install pyfaidx`
